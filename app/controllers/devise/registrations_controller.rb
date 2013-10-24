@@ -24,7 +24,7 @@ class Devise::RegistrationsController < DeviseController
       end
     else
       clean_up_passwords resource
-      respond_with resource
+      respond_with resource, :location => after_wrong_sign_up_path_for(resource)
     end
   end
 
@@ -50,7 +50,7 @@ class Devise::RegistrationsController < DeviseController
       respond_with resource, :location => after_update_path_for(resource)
     else
       clean_up_passwords resource
-      respond_with resource
+      respond_with resource, :location => after_wrong_update_path_for(resource)
     end
   end
 
@@ -110,10 +110,22 @@ class Devise::RegistrationsController < DeviseController
     respond_to?(:root_path) ? root_path : "/"
   end
 
+  # The path used after a wrong sign up. You need to overwrite this method
+  # in your own RegistrationsController.
+  def after_wrong_sign_up_path_for(resource)
+    respond_to?(:root_path) ? root_path : "/"
+  end
+
   # The default url to be used after updating a resource. You need to overwrite
   # this method in your own RegistrationsController.
   def after_update_path_for(resource)
     signed_in_root_path(resource)
+  end
+
+  # The default url to be used after failing updating a resource. You need to overwrite
+  # this method in your own RegistrationsController.
+  def after_wrong_update_path_for(resource)
+    respond_to?(:root_path) ? root_path : "/"
   end
 
   # Authenticates the current scope and gets the current resource from the session.
